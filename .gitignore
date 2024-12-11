@@ -1,3 +1,7 @@
+#Charan Ignore
+.vscode/
+
+
 # Prerequisites
 *.d
 
