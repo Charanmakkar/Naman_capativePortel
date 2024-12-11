@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-size: 1em;
+        }
+
+        .insideBox {
+            padding: 50px;
+            background-color: aliceblue;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 15%;
+        }
+
+        .form h2 {
+            margin-bottom: 20px;
+        }
+
+        .input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .button {
+            background-color: cadetblue;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 35%;
+            margin-top: 10px;
+            ;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="insideBox">
+        <form id="wifi-form" class="form">
+            <h2>Select Wi-Fi Network</h2>
+            <label for="ssid">SSID:</label>
+            <input type="text" id="ssid" name="ssid" class="input" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" class="input">
+            <br>
+            <button onclick="sendData()" class="button">Submit</button>
+        </form>
+    </div>
+    <script>
+        function sendData() {
+            // JavaScript function to handle sending data to ESP32
+            var varSSID = document.getElementById("ssid").value; // Get the value from the input field
+            var varPWD = document.getElementById("password").value; 
+            var dataToSend = {
+                SSID: varSSID,
+                PWD: varPWD
+            };
+            // Using fetch API to send a POST request to the ESP32 server
+            fetch('/post', {
+                method: 'POST', // HTTP method
+                headers: {
+                    'Content-Type': 'text/plain' // Content-Type header
+                },
+                body: JSON.stringify(dataToSend) // Data to send in the request body
+            })
+            .then(response => {
+                // Handle response from the server
+                if (!response.ok) {
+                    throw new Error('Network response was not ok'); // Throw an error for non-successful response
+                }
+                return response.text(); // Extract text from the response
+            })
+            .then(data => {
+                // Handle data received from the server
+                console.log('Response:', data); // Log the response data to the console
+            })
+            .catch(error => {
+                // Handle any errors that occur during fetch or processing
+                console.error('Error:', error); // Log the error to the console
+            });
+        }
+    </script>
+</body>
+
+</html>
